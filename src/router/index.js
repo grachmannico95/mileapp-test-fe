@@ -1,7 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import { isAuthenticated } from "../utils/cookies";
 import LoginView from "../views/LoginView.vue";
-import TasksView from "../views/TasksView.vue";
 
 const routes = [
   {
@@ -17,7 +16,7 @@ const routes = [
   {
     path: "/tasks",
     name: "Tasks",
-    component: TasksView,
+    component: () => import("../views/TasksView.vue"),
     meta: { requiresAuth: true },
   },
 ];
