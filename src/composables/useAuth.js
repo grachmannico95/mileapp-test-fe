@@ -1,6 +1,11 @@
 import { ref, computed } from "vue";
 import api from "../services/api";
-import { isAuthenticated } from "../utils/cookies";
+import {
+  isAuthenticated,
+  setAccessToken,
+  setCsrfToken,
+  clearTokens,
+} from "../utils/cookies";
 
 const user = ref(null);
 const isLoading = ref(false);
@@ -21,6 +26,15 @@ export function useAuth() {
 
       if (response.data.success) {
         user.value = response.data.data.user;
+
+        if (response.data.data.access_token) {
+          setAccessToken(response.data.data.access_token);
+        }
+
+        if (response.data.data.csrf_token) {
+          setCsrfToken(response.data.data.csrf_token);
+        }
+
         return { success: true, user: response.data.data.user };
       }
 
@@ -50,11 +64,13 @@ export function useAuth() {
 
       if (response.data.success) {
         user.value = null;
+        clearTokens(); // Clear tokens from localStorage
         window.location.href = "/login";
         return { success: true, message: response.data.message };
       }
 
       user.value = null;
+      clearTokens(); // Clear tokens from localStorage
       window.location.href = "/login";
       return { success: false, message: response.data.message };
     } catch (err) {
@@ -62,6 +78,7 @@ export function useAuth() {
       error.value = errorMessage;
 
       user.value = null;
+      clearTokens(); // Clear tokens from localStorage
       window.location.href = "/login";
 
       return {
