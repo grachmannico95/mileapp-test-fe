@@ -10,12 +10,34 @@ export function getCookie(name) {
   return null;
 }
 
+export function setAccessToken(token) {
+  localStorage.setItem("access_token", token);
+}
+
+export function setCsrfToken(token) {
+  localStorage.setItem("csrf_token", token);
+}
+
+export function getAccessTokenFromStorage() {
+  return localStorage.getItem("access_token");
+}
+
+export function getCsrfTokenFromStorage() {
+  return localStorage.getItem("csrf_token");
+}
+
+export function clearTokens() {
+  localStorage.removeItem("access_token");
+  localStorage.removeItem("csrf_token");
+}
+
+// Hybrid approach: check localStorage first, fallback to cookies
 export function getCsrfToken() {
-  return getCookie("csrf_token");
+  return getCsrfTokenFromStorage() || getCookie("csrf_token");
 }
 
 export function getAccessToken() {
-  return getCookie("access_token");
+  return getAccessTokenFromStorage() || getCookie("access_token");
 }
 
 export function isAuthenticated() {
